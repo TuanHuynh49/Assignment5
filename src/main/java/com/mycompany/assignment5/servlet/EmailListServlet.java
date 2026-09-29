@@ -69,23 +69,39 @@ public class EmailListServlet extends HttpServlet {
 
         // 3. Phân nhánh xử lý
         if ("register".equals(action)) {
-            // === XỬ LÝ ĐĂNG KÝ THÀNH VIÊN ===
+            // === XỬ LÝ ĐĂNG KÝ THÀNH VIÊN & TỰ ĐỘNG GỬI EMAIL ===
             if (email == null || email.isEmpty() || fullName == null || fullName.isEmpty()) {
                 request.setAttribute("message", "Vui lòng nhập đầy đủ Họ và tên và Email để đăng ký!");
                 url = "/index.jsp";
             } else if (UserDB.emailExists(email)) {
-                // Email đã tồn tại -> Lấy lại thông tin và chuyển sang trang cảm ơn
+                // Email đã tồn tại -> Lấy lại thông tin và gửi thư xác nhận
                 User existingUser = UserDB.selectUser(email);
                 if (existingUser != null) {
                     user = existingUser;
                 }
                 request.setAttribute("user", user);
-                request.setAttribute("infoMessage", "Email này đã được đăng ký trước đó. Bạn có thể nhấn 'Gửi Email Xác Nhận' bên dưới.");
+
+                try {
+                    sendConfirmationEmail(user);
+                    request.setAttribute("successMessage", "Email này đã tồn tại trong hệ thống. Đã gửi lại email xác nhận tới: " + user.getEmail());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    request.setAttribute("message", "Email đã tồn tại nhưng gửi email thất bại: " + e.getMessage());
+                }
                 url = "/thanks.jsp";
             } else {
                 int result = UserDB.insert(user);
                 if (result > 0) {
                     request.setAttribute("user", user);
+
+                    // Tự động gửi email xác nhận ngay khi đăng ký thành công
+                    try {
+                        sendConfirmationEmail(user);
+                        request.setAttribute("successMessage", "Đăng ký thành công! Email xác nhận đã được gửi tới: " + user.getEmail());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        request.setAttribute("message", "Đã lưu vào DB nhưng gửi email thất bại: " + e.getMessage());
+                    }
                     url = "/thanks.jsp";
                 } else {
                     request.setAttribute("message", "Có lỗi xảy ra khi lưu vào cơ sở dữ liệu. Vui lòng thử lại sau!");
@@ -93,7 +109,7 @@ public class EmailListServlet extends HttpServlet {
                 }
             }
         } else if ("send_mail".equals(action)) {
-            // === XỬ LÝ GỬI EMAIL TỪ TRANG THANKS.JSP ===
+            // === XỬ LÝ GỬI LẠI EMAIL TỪ TRANG THANKS.JSP (DÀNH ĐỂ TEST) ===
             if (email == null || email.isEmpty()) {
                 request.setAttribute("message", "Không tìm thấy địa chỉ Email cần gửi thư!");
                 url = "/index.jsp";
@@ -108,7 +124,7 @@ public class EmailListServlet extends HttpServlet {
 
                 try {
                     sendConfirmationEmail(user);
-                    request.setAttribute("successMessage", "Email xác nhận đã được gửi thành công tới: " + user.getEmail());
+                    request.setAttribute("successMessage", "Đã gửi lại email xác nhận thành công tới: " + user.getEmail());
                 } catch (Exception e) {
                     e.printStackTrace();
                     request.setAttribute("message", "Gửi email thất bại: " + e.getMessage());
