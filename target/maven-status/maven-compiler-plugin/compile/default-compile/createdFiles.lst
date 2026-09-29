@@ -1,0 +1,9 @@
+com\mycompany\assignment5\model\User.class
+com\mycompany\assignment5\data\MailUtilGmail$1.class
+com\mycompany\assignment5\data\DBUtil.class
+com\mycompany\assignment5\data\MailUtilGmail.class
+com\mycompany\assignment5\servlet\EmailListServlet.class
+com\mycompany\assignment5\data\UserDB.class
+com\mycompany\assignment5\resources\JakartaEE11Resource.class
+com\mycompany\assignment5\data\ConnectionPool.class
+com\mycompany\assignment5\JakartaRestConfiguration.class
