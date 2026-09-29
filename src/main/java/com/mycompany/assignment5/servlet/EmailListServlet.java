@@ -14,6 +14,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import com.mycompany.assignment5.model.User;
 import com.mycompany.assignment5.data.UserDB;
 import com.mycompany.assignment5.data.MailUtilGmail;
+import com.mycompany.assignment5.data.MailUtilRest;
 
 /**
  *
@@ -194,7 +195,7 @@ public class EmailListServlet extends HttpServlet {
                     + "  </div>"
                     + "</div>";
 
-        MailUtilGmail.sendMail(to, from, subject, body, true);
+        MailUtilRest.sendMail(to, user.getFullName(), from, subject, body);
     }
 
     /**
