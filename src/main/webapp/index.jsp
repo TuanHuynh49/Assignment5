@@ -15,11 +15,11 @@
     </head>
     <body>
         <div class="container">
-            <h2>Đăng Ký Thành Viên</h2>
+            <h2>Đăng ký thành viên</h2>
             <form action="EmailListServlet" method="post">
                 <input type="hidden" name="action" value="register" />
                 <div class="form-group">
-                    <label for="email">Địa chỉ Email:</label>
+                    <label for="email">Địa chỉ email:</label>
                     <input type="email" id="email" name="email" value="${user.email}" placeholder="example@gmail.com" required />
                 </div>
                 <div class="form-group">
@@ -27,7 +27,7 @@
                     <input type="text" id="fullName" name="fullName" value="${user.fullName}" placeholder="Nhập tên của bạn" required />
                 </div>
                 <div class="btn-group">
-                    <button type="submit" class="btn-register">Đăng Ký</button>
+                    <button type="submit" class="btn-register">Đăng ký</button>
                 </div>
             </form>
             
