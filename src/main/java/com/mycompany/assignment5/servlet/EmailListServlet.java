@@ -109,7 +109,7 @@ public class EmailListServlet extends HttpServlet {
             if (email == null || email.isEmpty() || fullName == null || fullName.isEmpty()) {
                 request.setAttribute("message", "Vui lòng nhập đầy đủ Họ và tên và Email để đăng ký!");
                 url = "/index.jsp";
-            } else if (UserDB.emailExists(user.getEmail())) {
+            } else if (UserDB.emailExists(email)) {
                 request.setAttribute("message", "Email này đã tồn tại trong hệ thống. Bạn có thể bấm 'Gửi Email' để nhận lại thư!");
                 url = "/index.jsp";
             } else {
@@ -142,7 +142,9 @@ public class EmailListServlet extends HttpServlet {
                 // Lấy thông tin họ tên từ Database nếu người dùng không nhập lại họ tên
                 User existingUser = UserDB.selectUser(email);
                 if (existingUser != null) {
-                    user = existingUser;
+                    if (fullName == null || fullName.isEmpty()) {
+                        user = existingUser;
+                    }
                 }
 
                 // Gửi email xác nhận
@@ -167,7 +169,8 @@ public class EmailListServlet extends HttpServlet {
      */
     private void sendConfirmationEmail(User user) throws Exception {
         String to = user.getEmail();
-        String from = "hlat10901@gmail.com";
+        String envFrom = System.getenv("GMAIL_USERNAME");
+        String from = (envFrom != null && !envFrom.trim().isEmpty()) ? envFrom.trim() : "hlat10901@gmail.com";
         String subject = "Xác nhận đăng ký & Thông tin tài khoản - " + user.getFullName();
 
         String body = "<div style=\"font-family: Arial, Helvetica, sans-serif; line-height: 1.6; color: #333333; max-width: 600px; margin: 0 auto; border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden;\">"

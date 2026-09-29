@@ -1,3 +1,7 @@
-"target/" 
-".nb-gradle/" 
-"nbproject/private/" 
+target/
+.nb-gradle/
+nbproject/private/
+.settings/
+.project
+.classpath
+ 

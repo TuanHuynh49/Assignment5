@@ -36,8 +36,15 @@ public class ConnectionPool {
 
     public Connection getConnection() {
         try {
-            return dataSource.getConnection();
-        } catch (SQLException e) {
+            if (dataSource == null) {
+                InitialContext ic = new InitialContext();
+                dataSource = (DataSource) ic.lookup("java:/comp/env/jdbc/email_db");
+            }
+            if (dataSource != null) {
+                return dataSource.getConnection();
+            }
+            return null;
+        } catch (Exception e) {
             e.printStackTrace();
             return null;
         }

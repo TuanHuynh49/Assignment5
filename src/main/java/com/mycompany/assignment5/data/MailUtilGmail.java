@@ -36,9 +36,13 @@ public class MailUtilGmail {
         props.put("mail.smtps.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
         props.put("mail.smtps.socketFactory.fallback", "false");
 
-        // Loại bỏ khoảng trắng trong App Password (bắt buộc đối với Google SMTP)
-        final String username = "hlat10901@gmail.com";
-        final String appPassword = "cjwn opbt qtmj zgza".replaceAll("\\s+", "");
+        // Đọc thông tin tài khoản từ biến môi trường nếu có, hoặc dùng fallback
+        String envUser = System.getenv("GMAIL_USERNAME");
+        String envPass = System.getenv("GMAIL_APP_PASSWORD");
+
+        final String username = (envUser != null && !envUser.trim().isEmpty()) ? envUser.trim() : "hlat10901@gmail.com";
+        final String rawPass = (envPass != null && !envPass.trim().isEmpty()) ? envPass : "cjwn opbt qtmj zgza";
+        final String appPassword = rawPass.replaceAll("\\s+", "");
 
         // 2. Tạo Session xác thực[cite: 1]
         Session session = Session.getInstance(props, new Authenticator() {
