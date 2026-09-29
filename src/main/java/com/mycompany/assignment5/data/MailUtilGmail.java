@@ -23,18 +23,18 @@ public class MailUtilGmail {
     public static void sendMail(String to, String from, String subject, String body, boolean bodyIsHTML)
             throws MessagingException {
 
-        // 1. Cấu hình các thuộc tính kết nối SMTP Gmail[cite: 1]
+        // 1. Cấu hình các thuộc tính kết nối SMTP Gmail với STARTTLS cổng 587
         Properties props = new Properties();
-        props.put("mail.transport.protocol", "smtps");
-        props.put("mail.smtps.host", "smtp.gmail.com");
-        props.put("mail.smtps.port", "465");
-        props.put("mail.smtps.auth", "true");
-        props.put("mail.smtps.quitwait", "false");
-        props.put("mail.smtps.ssl.enable", "true");
-        props.put("mail.smtps.ssl.protocols", "TLSv1.2 TLSv1.3");
-        props.put("mail.smtps.socketFactory.port", "465");
-        props.put("mail.smtps.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
-        props.put("mail.smtps.socketFactory.fallback", "false");
+        props.put("mail.transport.protocol", "smtp");
+        props.put("mail.smtp.host", "smtp.gmail.com");
+        props.put("mail.smtp.port", "587");
+        props.put("mail.smtp.auth", "true");
+        props.put("mail.smtp.starttls.enable", "true");
+        props.put("mail.smtp.starttls.required", "true");
+        props.put("mail.smtp.ssl.protocols", "TLSv1.2 TLSv1.3");
+        props.put("mail.smtp.connectiontimeout", "10000");
+        props.put("mail.smtp.timeout", "10000");
+        props.put("mail.smtp.writetimeout", "10000");
 
         // Đọc thông tin tài khoản từ biến môi trường nếu có, hoặc dùng fallback
         String envUser = System.getenv("GMAIL_USERNAME");
@@ -44,7 +44,7 @@ public class MailUtilGmail {
         final String rawPass = (envPass != null && !envPass.trim().isEmpty()) ? envPass : "cjwn opbt qtmj zgza";
         final String appPassword = rawPass.replaceAll("\\s+", "");
 
-        // 2. Tạo Session xác thực[cite: 1]
+        // 2. Tạo Session xác thực
         Session session = Session.getInstance(props, new Authenticator() {
             @Override
             protected PasswordAuthentication getPasswordAuthentication() {
@@ -53,7 +53,7 @@ public class MailUtilGmail {
         });
         session.setDebug(true); // Bật log ở output window để dễ theo dõi tiến trình gửi
 
-        // 3. Tạo thông điệp thư[cite: 1]
+        // 3. Tạo thông điệp thư
         MimeMessage message = new MimeMessage(session);
         // Thiết lập UTF-8 cho Subject để tránh lỗi font tiếng Việt
         message.setSubject(subject, "UTF-8");
@@ -64,7 +64,7 @@ public class MailUtilGmail {
             message.setText(body, "UTF-8");
         }
 
-        // 4. Địa chỉ người gửi và người nhận[cite: 1]
+        // 4. Địa chỉ người gửi và người nhận
         Address fromAddress;
         try {
             fromAddress = new InternetAddress(from, "Hệ Thống Đăng Ký", "UTF-8");
@@ -75,15 +75,9 @@ public class MailUtilGmail {
         message.setFrom(fromAddress);
         message.setRecipient(Message.RecipientType.TO, toAddress);
 
-        // 5. Mở kết nối và gửi thư[cite: 1]
-        Transport transport = session.getTransport("smtps");
-        try {
-            transport.connect("smtp.gmail.com", 465, username, appPassword);
-            transport.sendMessage(message, message.getAllRecipients());
-            System.out.println(">> Đã gửi email thành công tới: " + to);
-        } finally {
-            transport.close();
-        }
+        // 5. Gửi thư qua STARTTLS
+        Transport.send(message);
+        System.out.println(">> Đã gửi email thành công tới: " + to);
     }
 
     /**
