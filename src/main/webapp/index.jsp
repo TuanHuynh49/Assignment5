@@ -15,25 +15,24 @@
     </head>
     <body>
         <div class="container">
-            <h2>Đăng Ký & Nhận Email</h2>
+            <h2>Đăng Ký Thành Viên</h2>
             <form action="EmailListServlet" method="post">
+                <input type="hidden" name="action" value="register" />
                 <div class="form-group">
                     <label for="email">Địa chỉ Email:</label>
                     <input type="email" id="email" name="email" value="${user.email}" placeholder="example@gmail.com" required />
                 </div>
                 <div class="form-group">
                     <label for="fullName">Họ và tên:</label>
-                    <input type="text" id="fullName" name="fullName" value="${user.fullName}" placeholder="Nhập tên của bạn" />
+                    <input type="text" id="fullName" name="fullName" value="${user.fullName}" placeholder="Nhập tên của bạn" required />
                 </div>
                 <div class="btn-group">
-                    <button type="submit" name="action" value="register" class="btn-register">Đăng Ký</button>
-                    <button type="submit" name="action" value="send_mail" class="btn-send">Gửi Email</button>
+                    <button type="submit" class="btn-register">Đăng Ký</button>
                 </div>
             </form>
             
-            <%-- Thông báo lỗi hoặc thành công --%>
+            <%-- Thông báo lỗi nếu có --%>
             <p style="color: red; font-style: italic; margin-top: 15px;">${message}</p>
-            <p style="color: #2e7d32; font-weight: bold; margin-top: 15px;">${successMessage}</p>
         </div>
     </body>
 </html>
