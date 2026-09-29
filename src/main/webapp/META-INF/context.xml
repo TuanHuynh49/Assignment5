@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Context path="/Assignment5">
-<Resource name="jdbc/email_db" 
+    <Resource name="jdbc/email_db" 
               auth="Container" 
               type="javax.sql.DataSource"
               maxTotal="20" 
               maxIdle="10" 
               maxWaitMillis="-1"
-              username="postgres" 
-              password="040906" 
+              username="assignment5_db_user" 
+              password="Ge2xcwsWK68ZGRy8D00gGFGNI012nb4z" 
               driverClassName="org.postgresql.Driver"
-              url="jdbc:postgresql://localhost:5432/postgres"/>
+              url="jdbc:postgresql://dpg-datnlregekts73bi66p0-a:5432/assignment5_db?sslmode=require"/>
 </Context>
