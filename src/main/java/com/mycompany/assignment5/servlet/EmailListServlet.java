@@ -121,7 +121,6 @@ public class EmailListServlet extends HttpServlet {
                 .getRequestDispatcher(url)
                 .forward(request, response);
     }
-    }
 
     /**
      * Hàm phụ trợ gửi email xác nhận với mẫu Dear client và thông tin người dùng
